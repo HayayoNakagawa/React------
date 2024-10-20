@@ -1,92 +1,101 @@
 import { useState } from "react";
 
-// ランダムな値を配列から選ぶ関数
 function randomValueFromArray(array) {
-  const random = Math.floor(Math.random() * array.length);
-  return array[random];
+    const random = Math.floor(Math.random() * array.length);
+    return array[random];
 }
 
-// ポンドをストーンに変換する関数
-function poundsToStones(pounds) {
-  return Math.round(pounds / 14);
-}
+// 温度と体重を計算する関数
+function calculateTemperatureAndWeight(unitSystem) {
+    const initialTemperature = 94; // 初期華氏温度
+    const initialWeight = 300; // 初期ポンド体重
 
-// 華氏を摂氏に変換する関数
-function fahrenheitToCelsius(fahrenheit) {
-  return Math.round(((fahrenheit - 32) * 5) / 9);
+    let newTemperature = initialTemperature;
+    let newWeight = initialWeight;
+
+    if (unitSystem === "uk") {
+        newTemperature = Math.round((initialTemperature - 32) * (5 / 9)); // 華氏から摂氏に変換
+        newWeight = Math.round(initialWeight / 14); // ポンドからストーンに変換
+    }
+
+    return { newTemperature, newWeight };
 }
 
 export default function App() {
-  const [customName, setCustomName] = useState(""); // カスタム名
-  const [xItem, setXItem] = useState("");
-  const [yItem, setYItem] = useState("");
-  const [zItem, setZItem] = useState("");
-  const [showStory, setShowStory] = useState(false);
-  const [ukus, setUkus] = useState("us"); // ラジオボタンの状態
+    const [showStory, setShowStory] = useState(false);
+    const [inputName, setInputName] = useState('Bob');  
+    const [name, setName] = useState('Bob');            
+    const [unitSystem, setUnitSystem] = useState('us');
+    const [temperature, setTemperature] = useState(94);
+    const [weight, setWeight] = useState(300);
+    const [xItem, setXItem] = useState('');
+    const [yItem, setYItem] = useState('');
+    const [zItem, setZItem] = useState('');
 
-  const storyElements = {
-    xItems: ["Willy the Goblin", "Big Daddy", "Father Christmas"],
-    yItems: ["the soup kitchen", "Disneyland", "the White House"],
-    zItems: [
-      "spontaneously combusted",
-      "melted into a puddle on the sidewalk",
-      "turned into a slug and crawled away",
-    ],
-  };
+    const xItems = ['Willy the Goblin', 'Big Daddy', 'Father Christmas'];
+    const yItems = ['the soup kitchen', 'Disneyland', 'the White House'];
+    const zItems = ['spontaneously combusted', 'melted into a puddle on the sidewalk', 'turned into a slug and crawled away'];
 
-  // ボタンが押されたときの処理
-  function generateStory() {
-    const randomXItem = randomValueFromArray(storyElements.xItems);
-    const randomYItem = randomValueFromArray(storyElements.yItems);
-    const randomZItem = randomValueFromArray(storyElements.zItems);
+    function generateStory(event) {
+        event.preventDefault();
 
-    setXItem(randomXItem);
-    setYItem(randomYItem);
-    setZItem(randomZItem);
-    setShowStory(true);
-  }
+        const newXItem = randomValueFromArray(xItems);
+        const newYItem = randomValueFromArray(yItems);
+        const newZItem = randomValueFromArray(zItems);
 
-  // 重さと温度を設定
-  const weight = ukus === "uk" ? poundsToStones(300) : 300; // 重さの設定
-  const temperature = fahrenheitToCelsius(94); // 温度の設定
+        setXItem(newXItem);
+        setYItem(newYItem);
+        setZItem(newZItem);
 
-  return (
-    <>
-      <div>
-        <label htmlFor="customname">Enter custom name:</label>
-        <input
-          type="text"
-          placeholder=""
-          value={customName}
-          onChange={(e) => setCustomName(e.target.value)}
-        />
-      </div>
-      <div>
-        <label htmlFor="us">US</label>
-        <input
-          type="radio"
-          value="us"
-          checked={ukus === "us"}
-          onChange={() => setUkus("us")}
-        />
-        <label htmlFor="uk">UK</label>
-        <input
-          type="radio"
-          value="uk"
-          checked={ukus === "uk"}
-          onChange={() => setUkus("uk")}
-        />
-      </div>
-      <div>
-        <button onClick={generateStory}>Generate random story</button>
-      </div>
-      {showStory && (
-        <p>
-          It was {temperature} degrees Celsius outside, so {xItem} went for a walk. When they
-          got to {yItem}, they stared in horror for a few moments, then {zItem}.
-          {customName || "Bob"} saw the whole thing, but was not surprised — {xItem} weighs {weight} {ukus === "uk" ? "stones" : "pounds"}, and it was a hot day.
-        </p>
-      )}
-    </>
-  );
+        // 関数を使って温度と体重を計算
+        const { newTemperature, newWeight } = calculateTemperatureAndWeight(unitSystem);
+
+        setTemperature(newTemperature);
+        setWeight(newWeight);
+        setName(inputName); 
+        setShowStory(true);
+    }
+
+    return (
+        <>
+            <div>
+                <label htmlFor="customname">Enter custom name:</label>
+                <input
+                    type="text"
+                    placeholder=""
+                    onChange={(event) => setInputName(event.target.value || "Bob")} 
+                />
+            </div>
+            <div>
+                <label htmlFor="us">US</label>
+                <input
+                    type="radio"
+                    value="us"
+                    checked={unitSystem === "us"}
+                    onChange={() => setUnitSystem("us")}
+                />
+                <label htmlFor="uk">UK</label>
+                <input
+                    type="radio"
+                    value="uk"
+                    checked={unitSystem === "uk"}
+                    onChange={() => setUnitSystem("uk")}
+                />
+            </div>
+            <div>
+                <button onClick={generateStory}>Generate random story</button>
+            </div>
+            {showStory && (
+                <p>
+                    It was {temperature} degrees outside, 
+                    so {xItem} went for a walk. 
+                    When they got to {yItem}, 
+                    they stared in horror for a few moments, 
+                    then {zItem}. {name} saw the whole thing, 
+                    but was not surprised — {xItem} weighs {weight} pounds, 
+                    and it was a hot day.
+                </p>
+            )}
+        </>
+    );
 }
