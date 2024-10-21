@@ -47,7 +47,6 @@ export default function App() {
         setYItem(newYItem);
         setZItem(newZItem);
 
-        // 関数を使って温度と体重を計算
         const { newTemperature, newWeight } = calculateTemperatureAndWeight(unitSystem);
 
         setTemperature(newTemperature);
