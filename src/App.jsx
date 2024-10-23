@@ -12,14 +12,14 @@ function calculateTemperatureAndWeight(unitSystem) {
 
     let newTemperature = initialTemperature;
     let newWeight = initialWeight;
-    let tempType = "Fahrenheit";
+    let tempType = "fahrenheit";
     let weightType = "pounds";
 
     if (unitSystem === "uk") {
         newTemperature = Math.round((initialTemperature - 32) * (5 / 9)); // 華氏 → 摂氏
         newWeight = Math.round(initialWeight / 14); // ポンド → キログラム
-        tempType = "Celsius";
-        weightType = "kilograms";
+        tempType = "celsius";
+        weightType = "stone";
     }
 
     return { newTemperature, newWeight, tempType, weightType };
@@ -31,7 +31,7 @@ export default function App() {
     const [name, setName] = useState("Bob");
     const [unitSystem, setUnitSystem] = useState("us");
     const [temperature, setTemperature] = useState(94);
-    const [tempType, setTempType] = useState("Fahrenheit");
+    const [tempType, setTempType] = useState("fahrenheit");
     const [weight, setWeight] = useState(300);
     const [weightType, setWeightType] = useState("pounds");
     const [xItem, setXItem] = useState("");
@@ -101,7 +101,7 @@ export default function App() {
             </div>
             {showStory && (
                 <p>
-                    It was {temperature} degrees {tempType} outside, 
+                    It was {temperature} {tempType} outside, 
                     so {xItem} went for a walk. When they got to {yItem}, 
                     they stared in horror for a few moments, then {zItem}. 
                     {name} saw the whole thing, but was not surprised — 
